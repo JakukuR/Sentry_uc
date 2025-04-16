@@ -1,0 +1,141 @@
+TebLocalPlannerROS:
+
+ odom_topic: odom
+
+  #Trajectory
+
+  teb_autosize: true
+  dt_ref: 0.3
+  dt_hysteresis: #0.06 根据当前时间分辨率自动调整大小的滞后现象，通常约为。建议使用dt ref的10%
+  max_samples: 500
+  global_plan_overwrite_orientation: true
+  allow_init_with_backwards_motion: true
+  max_global_plan_lookahead_dist: 1.37 #2.0
+  global_plan_viapoint_sep: 0.05
+  global_plam_prune_distance: 1.5
+  exact_arc_length: true
+  feasibility_check_no_poses: 2
+  publish_feedback: false
+
+  #Robot
+
+  max_vel_x: 5
+  max_vel_y: 2.5
+  max_vel_x_backwards: 5 #0.5 //
+  max_vel_theta: 3.14  # the angular velocity is also bounded by min_turning_radius in case of a carlike robot (r = v / omega)
+  acc_lim_x: 8.0 #0.5############################3  1.1
+  acc_lim_y: 4.0
+  acc_lim_theta: 7.0 #0.5####################ros2 run nav2_map_server map_saver_cli -t map -f fishbot_map## 0.95
+
+  min_turning_radius: 0.0
+  cmd_angle_instead_rotvel: false #将收到的角速度消息转换为操作上的角度变化
+
+  #底盘模型设置
+  footprint_model:_
+    type: "circular"
+    radius: 0.25
+    line_start: [-0.1, 0.0]
+    line_end: [0.1,0.0]
+    front_offset: 0.2
+    front_radius: 0.2
+    rear_offset: 0.2 # for type "two_circles"
+    rear_radius: 0.2 # for type "two_circles"88888888
+    vertices: [[-0.145, -0.018], [-0.145, 0.06], [0.01, 0.06], [0.01, -0.018]] # for type "polygon"
+ 
+  #GoalTolerance
+  xy_goal_tolerance: 0.15
+  yaw_goal_tolerance: 0.2
+  free_goal_vel: False   #allow the max velocity to the goal---车到达终点时的目标速度为0
+  complete_global_plan: True
+
+   #Obstacles
+  min_obstacle_dist: 0.55 #0.245
+  inflation_dist: 0.6
+  include_costmap_obstacles: True
+  costmap_obstacles_behind_robot_dist: 1.0
+  obstacle_poses_affected: 30
+  dynamic_obstacle_inflation_dist: 0.8
+  include_dynamic_obstacles: True         #将动态障碍物预测为速度模型
+  costmap_converter_plugin: ""
+  costmap_converter_spin_thread: True
+  costmap_converter_rate: 5
+
+#Optimization:路径优化算法的参数
+
+
+#内部
+no_inner_iteration: 5
+#外部
+no_outer_iteration: 4
+optimization_activate: true
+optimization_verbose: true #是否详细输出信息
+penalty_epsilon: 0.148 #“软”边界:the region of obstacle--safe distance
+obstacle_cost_enponent: 4
+weight_max_vel_x: 13
+weight_min_vel_y: 8
+weight_max_vel_theta: 2
+weight_acc_lim_x: 2.8
+weight_acc_lim_y: 2.5
+weight_acc_lim_theta: 2
+weight_kinematics_nh: 0.0001 #非完整运动学约束权重
+
+weight_kinematics_forward_drive: 10
+weight_kinematics_turning_radius: 0.001
+weight_optimaltime: 20
+weight_shortest_path: 10
+weight_obstacle: 80
+weight_inflation: 30
+weight_dynamic_obstacle: 10
+weight_dynamic_obstacle_inflation: 0.2
+weight_viapoint: 20
+weight_adapt_factor: 2
+
+#Homotopy Class Planner
+
+enable_homotomy_class_planning: true  
+enable_multithreading: True     #允许多线程并行处理
+max_number_classes: 3           #考虑到的不同轨迹的最大数量
+selection_cost_hysteresis: 1.0
+selection_obst_cost_scale: 100.0
+selection_alernative_time_cost: false
+
+roadmap_graph_no_sampls: 15
+roadmap_graph_area_width: 6
+roadmap_graph_area_length_scale: 1.0
+h_signature_prescaler: 0.5
+g_signature_threshold: 0.1       #实部和复部的差都低于规定的阈值---假定两个h签名相等
+obstacle_heading_threshold: 0.45 #障碍物航向和目标航向之间指定标量乘积,以便将障碍物考虑在内进行探索
+switching_blocking_period: 0.0   #指定允许切换到新的等效类之前需要终止的持续时间
+
+viapoints_all_candidates: True
+delete_detours_backwards: True
+max_ratio_detours_duration_best_duration: 3.0
+visiualize_hc_graph: False                  #可视化创建图形---探索不同的轨迹
+visiualize_with_time_as_z_axis_scale: False #在rviz里可看到优化使用的graph
+
+#Recovery
+shrink_horizon_backup: false 
+shrink_horizon_min_duration: 10
+##v_eps & omega_eps:if the velocity is the shrinking_threshold
+oscillation_v_eps: 0.1            #(0,1)
+oscillation_omega_eps: 0.1        #(0,1)
+oscillation_recovery_min_duration: 10
+oscillation_filter_duration: 10 #failure detector缓冲区大小
+#failure_detector_中buffer容器的大小---size:oscillation_filter_duration * controller_frequency
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

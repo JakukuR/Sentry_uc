@@ -1,0 +1,9 @@
+camera: hik
+
+livox_frame2camera:
+  xyz: "\"0.51 0.0  0.06\""
+  rpy: "\"0.0  0.015 0.0\""
+
+detector_log_level: INFO
+tracker_log_level: INFO
+serial_log_level: INFO
